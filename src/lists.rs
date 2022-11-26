@@ -1,5 +1,8 @@
 fn main() {
-    let name = input("Bitte gib deinen Namen an: ");
+    let names = input("Bitte gib deine Namen an (Vorname1, (Vorname2, ...) Nachname): ");
+    let names = {
+        names.split(" ").collect::<Vec<String>>()
+    };
     let job = input("Bitte gib deinen Beruf an: ");
     let pet_name = input("Bitte gib den Namen deines Tieres an, oder \"-\" für kein Tier: ");
     let pet = parse_pet(pet_name);
@@ -8,7 +11,7 @@ fn main() {
     let age = input("Bitte gib dein Alter an: ").parse::<u16>().expect("Bitte gib dein alter als ganze Zahl an.");
 
     let person = Person {
-        name,
+        names,
         job,
         pet,
         age,
@@ -50,9 +53,12 @@ fn parse_breed() -> Option<DogBreed> {
     }
 }
 
-fn make_hello(person: &str) -> String {
-    let mut hello = String::from("Hello ");
-    hello.push_str(person);
+fn make_hello(person: &Vec<String>) -> String {
+    let mut hello = String::from("Hello");
+    for name in person {
+        hello.push_str(" ");
+        hello.push_str(name);
+    }
     hello
 }
 
@@ -64,7 +70,7 @@ fn input(prompt: &str) -> String {
 }
 
 struct Person {
-    name: String,
+    names: Vec<String>,
     job: String,
     pet: Option<Pet>,
     age: u16,
@@ -73,7 +79,7 @@ struct Person {
 impl Person {
 
     fn greet(&self) {
-        println!("{}", make_hello(&*self.name));
+        println!("{}", make_hello(&self.names));
         println!("Mit {} {} zu sein ist voll cool!", self.age, &self.job);
         if let Some(pet) = &self.pet {
             println!("Wie bist du auf {} gekommen?", pet.name);

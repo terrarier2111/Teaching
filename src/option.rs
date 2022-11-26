@@ -1,22 +1,30 @@
 fn main() {
     let name = input("Bitte gib deinen Namen an: ");
     let job = input("Bitte gib deinen Beruf an: ");
-    let pet_name = input("Bitte gib den Namen deines Tieres an: ");
-    let pet_type = input("Bitte gib die Art deines Tieres an: ");
-    let age = input("Bitte gib dein Alter an: ").parse::<u16>().expect("Bitte gib dein alter als ganze Zahl an.");
+    let pet_name = input("Bitte gib den Namen deines Tieres an, oder \"-\" für kein Tier: ");
+    let pet = if &*pet_name != "-" {
+        let pet_type = input("Bitte gib die Art deines Tieres an: ");
 
-    let person = Person {
-        name,
-        job,
-        pet: Pet {
+        Some(Pet {
             name: pet_name,
             ty: match &*pet_type {
                 "cat" | "Cat" => PetType::Cat,
                 "dog" | "Dog" => PetType::Dog,
                 "mouse" | "Mouse" => PetType::Mouse,
-                &_ => PetType::None,
+                &_ => panic!("Bitte gib ein Gültiges Tier an: \"Mouse\", \"Dog\" oder \"Cat\"!"),
             },
-        },
+        })
+    } else {
+        None
+    };
+
+    // | Hier kann jeder Typ angegeben werden, der geparst werden kann
+    let age = input("Bitte gib dein Alter an: ").parse::<u16>().expect("Bitte gib dein alter als ganze Zahl an.");
+
+    let person = Person {
+        name,
+        job,
+        pet,
         age,
     };
     person.greet();
@@ -38,7 +46,7 @@ fn input(prompt: &str) -> String {
 struct Person {
     name: String,
     job: String,
-    pet: Pet,
+    pet: Option<Pet>,
     age: u16,
 }
 
@@ -46,8 +54,10 @@ impl Person {
 
     fn greet(&self) {
         println!("{}", make_hello(&*self.name));
-        println!("Mit {} {} zu sein ist voll cool!", self.age, &*self.job);
-        println!("Wie bist du auf {} gekommen?", &*self.pet.name);
+        println!("Mit {} {} zu sein ist voll cool!", self.age, &self.job);
+        if let Some(pet) = &self.pet {
+            println!("Wie bist du auf {} gekommen?", pet.name);
+        }
     }
 
 }
@@ -61,5 +71,5 @@ enum PetType {
     Cat,
     Dog,
     Mouse,
-    None,
+    // Keine `None` variante mehr, weil wir ja eine `Option` haben.
 }

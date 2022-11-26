@@ -7,10 +7,14 @@ mod matching;
 
 
 mod calculator;
-mod extended_calc;
 
 
+mod panicking;
+mod option;
 mod enums;
+mod lists;
+
+mod extended_calc;
 
 fn main() {
     println!("Hello, world!");

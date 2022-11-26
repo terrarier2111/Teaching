@@ -1,15 +1,22 @@
 fn main() {
     let name = input("Bitte gib deinen Namen an: ");
     let job = input("Bitte gib deinen Beruf an: ");
-    let pet = input("Bitte gib den Namen deines Tieres an: ");
-
-                                                                  // | Hier kann jeder Typ angegeben werden, der geparst werden kann
+    let pet_name = input("Bitte gib den Namen deines Tieres an: ");
+    let pet_type = input("Bitte gib die Art deines Tieres an: ");
     let age = input("Bitte gib dein Alter an: ").parse::<u16>().expect("Bitte gib dein alter als ganze Zahl an.");
 
     let person = Person {
         name,
         job,
-        pet,
+        pet: Pet {
+            name: pet_name,
+            ty: match &*pet_type {
+                "cat" | "Cat" => PetType::Cat,
+                "dog" | "Dog" => PetType::Dog,
+                "mouse" | "Mouse" => PetType::Mouse,
+                &_ => panic!("Bitte gib ein Gültiges Tier an: \"Mouse\", \"Dog\" oder \"Cat\"!"),
+            },
+        },
         age,
     };
     person.greet();
@@ -31,17 +38,27 @@ fn input(prompt: &str) -> String {
 struct Person {
     name: String,
     job: String,
-    pet: String,
+    pet: Pet,
     age: u16,
 }
 
 impl Person {
 
-    // wir nehmen nur eine referenz, weil wir ja die Person vielleicht nocheinmal ansprechen wollen, nachdem wir sie gegrüßt haben.
     fn greet(&self) {
         println!("{}", make_hello(&*self.name));
-        println!("Mit {} {} zu sein ist voll cool!", self.age, &*self.job); // wir können einfach 2 Sachen hintereinander ausgeben
-        println!("Wie bist du auf {} gekommen?", &*self.pet);
+        println!("Mit {} {} zu sein ist voll cool!", self.age, &*self.job);
+        println!("Wie bist du auf {} gekommen?", &*self.pet.name);
     }
 
+}
+
+struct Pet {
+    name: String,
+    ty: PetType,
+}
+
+enum PetType {
+    Cat,
+    Dog,
+    Mouse,
 }

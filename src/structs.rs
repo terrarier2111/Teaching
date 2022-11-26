@@ -7,13 +7,7 @@ fn main() {
         job,
         pet,
     };
-    greet(person);
-}
-
-fn greet(person: Person) {
-    println!("{}", make_hello(&*person));
-    println!("{} zu sein ist voll cool!", person.job);
-    println!("Wie bist du auf {} gekommen?", person.pet);
+    person.greet();
 }
 
 fn make_hello(person: &str) -> String {
@@ -33,4 +27,15 @@ struct Person {
     name: String,
     job: String,
     pet: String,
+}
+
+impl Person {
+
+    // wir nehmen nur eine referenz, weil wir ja die Person vielleicht nocheinmal ansprechen wollen, nachdem wir sie gegrüßt haben.
+    fn greet(&self) {
+        println!("{}", make_hello(&*self.name));
+        println!("{} zu sein ist voll cool!", &*self.job);
+        println!("Wie bist du auf {} gekommen?", &*self.pet);
+    }
+
 }
